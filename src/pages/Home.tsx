@@ -4,10 +4,27 @@ import { format, isToday, parseISO, isAfter } from 'date-fns';
 import { id as localeId } from 'date-fns/locale';
 import { Link } from 'react-router-dom';
 
+const MOTIVATIONAL_QUOTES = [
+  "Awali hari dengan senyuman dan semangat pantang menyerah.",
+  "Setiap hari adalah kesempatan baru untuk menjadi lebih baik.",
+  "Fokus pada langkahmu hari ini, bukan seberapa jauh tujuanmu.",
+  "Kerja keras hari ini adalah investasi untuk masa depan.",
+  "Kesuksesan dimulai dari hal-hal kecil yang konsisten.",
+  "Percaya pada dirimu, kamu lebih kuat dari yang kamu kira.",
+  "Jangan takut gagal, takutlah jika tidak pernah mencoba.",
+  "Produktivitas bukan tentang sibuk, tapi menyelesaikan hal penting.",
+  "Satu langkah kecil lebih baik daripada tidak melangkah.",
+  "Syukuri apa yang ada, perjuangkan apa yang kamu impikan."
+];
+
 export default function Home() {
   const { user, events, holidays } = useAppStore();
 
   const today = new Date();
+  
+  // Deterministic daily quote
+  const dayOfYear = Math.floor((today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / 1000 / 60 / 60 / 24);
+  const quoteOfTheDay = MOTIVATIONAL_QUOTES[dayOfYear % MOTIVATIONAL_QUOTES.length];
   
   // Filter today's events
   const todayEvents = events.filter(e => isToday(parseISO(e.eventDate)));
@@ -44,7 +61,8 @@ export default function Home() {
             <div>
               <p className="text-sm font-medium opacity-90">{format(today, 'EEEE, dd MMMM yyyy', { locale: localeId })}</p>
               <h2 className="text-3xl font-bold mt-1">Hari Ini</h2>
-              <p className="mt-3 text-xs opacity-80 max-w-[200px]">Anda memiliki {todayEvents.length} agenda hari ini dan {events.filter(e => e.isCompleted).length} telah selesai.</p>
+              <p className="mt-3 text-[11px] font-medium opacity-90 max-w-[200px] italic">"{quoteOfTheDay}"</p>
+              <p className="mt-2 text-[10px] opacity-70 max-w-[200px]">({todayEvents.length} agenda hari ini)</p>
             </div>
             <div className="text-right flex flex-col justify-end">
               <p className="text-[10px] uppercase tracking-widest opacity-70 mb-1">Total</p>
